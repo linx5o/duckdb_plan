@@ -13,8 +13,33 @@
 #include "duckdb/parallel/thread_context.hpp"
 #include "duckdb/storage/buffer/buffer_pool.hpp"
 #include "duckdb/storage/buffer_manager.hpp"
+#include "duckdb/common/nlohmann_json.hpp"
+
+#include <fstream>
+
+using json = nlohmann::json;
 
 namespace duckdb {
+
+json PhysicalOperator::Serialize() const {
+    json node;
+    node["type"] = PhysicalOperatorToString(type); // Convert operator type to string
+    node["estimated_cardinality"] = estimated_cardinality;
+
+    // Serialize return types
+    node["types"] = json::array();
+    for (const auto &type : types) {
+        node["types"].push_back(type.ToString()); // Assuming LogicalType has a ToString() method
+    }
+
+    // Serialize children
+    node["children"] = json::array();
+    for (const auto &child : children) {
+        node["children"].push_back(child.get().Serialize());
+    }
+
+    return node;
+}
 
 PhysicalOperator::PhysicalOperator(PhysicalPlan &physical_plan, PhysicalOperatorType type, vector<LogicalType> types,
                                    idx_t estimated_cardinality)

@@ -23,6 +23,7 @@
 #include "duckdb/execution/physical_operator_states.hpp"
 #include "duckdb/execution/progress_data.hpp"
 #include "duckdb/optimizer/join_order/join_node.hpp"
+#include "duckdb/common/nlohmann_json.hpp"
 
 namespace duckdb {
 
@@ -34,8 +35,14 @@ class PipelineBuildState;
 class MetaPipeline;
 class PhysicalPlan;
 
+using json = nlohmann::json;
+
 //! PhysicalOperator is the base class of the physical operators present in the execution plan.
 class PhysicalOperator {
+public:
+    //! Serialize the physical operator to JSON
+    virtual json Serialize() const;
+
 public:
 	static constexpr const PhysicalOperatorType TYPE = PhysicalOperatorType::INVALID;
 

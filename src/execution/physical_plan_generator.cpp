@@ -22,6 +22,13 @@ PhysicalPlanGenerator::~PhysicalPlanGenerator() {
 unique_ptr<PhysicalPlan> PhysicalPlanGenerator::Plan(unique_ptr<LogicalOperator> op) {
 	auto &plan = ResolveAndPlan(std::move(op));
 	plan.Verify();
+	
+	// Serialize the physical plan
+    auto serialized_plan = physical_plan->Root().Serialize();
+    std::ofstream out("physical_plan.json");
+    out << serialized_plan.dump(4); // Pretty-print JSON with 4 spaces
+    out.close();
+
 	return std::move(physical_plan);
 }
 
