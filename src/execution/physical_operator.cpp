@@ -21,6 +21,24 @@ using json = nlohmann::json;
 
 namespace duckdb {
 
+unique_ptr<PhysicalOperator> PhysicalOperator::Deserialize(const json &node, PhysicalPlan &physical_plan) {
+    auto type = StringToPhysicalOperatorType(node["type"]); // Convert string to PhysicalOperatorType
+    auto estimated_cardinality = node["estimated_cardinality"];
+    vector<LogicalType> types;
+    for (const auto &type_str : node["types"]) {
+        types.push_back(LogicalType::FromString(type_str)); // Assuming LogicalType has FromString()
+    }
+
+    auto op = make_uniq<PhysicalOperator>(physical_plan, type, std::move(types), estimated_cardinality);
+
+    // Deserialize children
+    for (const auto &child_node : node["children"]) {
+        op->children.push_back(PhysicalOperator::Deserialize(child_node, physical_plan));
+    }
+
+    return op;
+}
+
 json PhysicalOperator::Serialize() const {
     json node;
     node["type"] = PhysicalOperatorToString(type); // Convert operator type to string

@@ -39,6 +39,8 @@ using json = nlohmann::json;
 
 //! PhysicalOperator is the base class of the physical operators present in the execution plan.
 class PhysicalOperator {
+static unique_ptr<PhysicalOperator> Deserialize(const json &node, PhysicalPlan &physical_plan);
+
 public:
     //! Serialize the physical operator to JSON
     virtual json Serialize() const;
