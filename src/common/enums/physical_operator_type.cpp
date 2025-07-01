@@ -1,4 +1,5 @@
 #include "duckdb/common/enums/physical_operator_type.hpp"
+#include "duckdb/common/enum_util.hpp"
 
 namespace duckdb {
 
@@ -171,5 +172,9 @@ string PhysicalOperatorToString(PhysicalOperatorType type) {
 	return "INVALID";
 }
 // LCOV_EXCL_STOP
+
+PhysicalOperatorType PhysicalOperatorTypeFromString(const string &str) {
+	return EnumUtil::FromString<PhysicalOperatorType>(str.c_str());
+}
 
 } // namespace duckdb

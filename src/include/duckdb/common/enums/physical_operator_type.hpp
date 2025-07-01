@@ -12,6 +12,8 @@
 
 namespace duckdb {
 
+using std::string;
+
 //===--------------------------------------------------------------------===//
 // Physical Operator Types
 //===--------------------------------------------------------------------===//
@@ -126,5 +128,6 @@ enum class PhysicalOperatorType : uint8_t {
 };
 
 string PhysicalOperatorToString(PhysicalOperatorType type);
+PhysicalOperatorType PhysicalOperatorTypeFromString(const string &str);
 
 } // namespace duckdb
